@@ -1,10 +1,10 @@
 /*
 Joseph Habeck, March 2018
 
-Summary: code to run heater module; reads in temperature from both analog and digital sensors 
-(uses digital value to compare to critical temp.) checks if temperature is below user-defined 
-critical temperature, if so, turns on heater;
-temperature readings, heater operation status, and flight time is written to SD card. 
+Summary: code to run heater module; reads in temperature from both analog and digital sensors checks if temperature is below user-defined 
+critical LOW temperature, if so, turns on heater; heater remains on until temperature is above critical HIGH temp.;
+temperature readings, heater operation status, and flight time is written to SD card. Note that the temperature reading used to 
+compare to the critical temps. is read from the digital sensor. 
 
 The circuit includes:
 -- Arduino Uno
