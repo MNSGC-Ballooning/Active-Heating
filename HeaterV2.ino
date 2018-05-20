@@ -19,7 +19,7 @@ The circuit includes:
 #include <SPI.h>
 #include <SD.h>
 
-// The following is all stuff "required" for the Dallas temp sensor...:
+// Used for Dallas temp sensor:
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #define ONE_WIRE_BUS 2
