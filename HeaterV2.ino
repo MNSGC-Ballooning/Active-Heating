@@ -35,8 +35,8 @@ int hold; // used for heater switch
 float t1; // temperature read from analog sensor
 float t2; // temperature read from digital sensor
 float samp_freq=3000; // sampling frequency (ms)
-float t_low = 283; // critical low temp (heater turns ON if t2 < t_low)
-float t_high = 289; // critical high temp (heater turns OFF if t2 > t_high)
+float t_low = 283; // critical low temp [K] (heater turns ON if t2 < t_low)
+float t_high = 289; // critical high temp [K] (heater turns OFF if t2 > t_high)
 
 String data; // used for data logging
 String heaterStatus; // used for data logging; will be "on" or "off" 
