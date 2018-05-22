@@ -15,7 +15,7 @@ The circuit includes:
 -- (2) 9v battery power supply 
  */
 
-
+// Libraries
 #include <SPI.h>
 #include <SD.h>
 
@@ -27,25 +27,28 @@ OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 //
 
-int tPin1 = 0; // set analog pin 0 (analog temp sensor)
-int tPin2 = 2; // set digital pin 2 (digital temp sensor)
-int qSwitch = 4; // set digital pin 4 (relay)
-int hold; // used for heater switch
+// Set pins
+int tPin1 = 0;                            // set analog pin 0 (analog temp sensor)
+int tPin2 = 2;                            // set digital pin 2 (digital temp sensor)
+int qSwitch = 4;                          // set digital pin 4 (relay)
+int hold;                                 // used for heater switch
 
-float t1; // temperature read from analog sensor
-float t2; // temperature read from digital sensor
-float samp_freq=3000; // sampling frequency (ms)
-float t_low = 283; // critical low temp [K] (heater turns ON if t2 < t_low)
-float t_high = 289; // critical high temp [K] (heater turns OFF if t2 > t_high)
+// Define variables
+float t1;                                 // temperature read from analog sensor
+float t2;                                 // temperature read from digital sensor
+float samp_freq=3000;                     // sampling frequency (ms)
+float t_low = 283;                        // critical low temp [K] (heater turns ON if t2 < t_low)
+float t_high = 289;                       // critical high temp [K] (heater turns OFF if t2 > t_high)
 
-String data; // used for data logging
-String heaterStatus; // used for data logging; will be "on" or "off" 
-String filename = "tempLog.csv"; // file name that data wil be written to
-const int CS = 8; // CS pin on SD card
-File tempLog; // file that data is written to 
+// More variable definitions
+String data;                              // used for data logging
+String heaterStatus;                      // used for data logging; will be "on" or "off" 
+String filename = "tempLog.csv";          // file name that data wil be written to
+const int CS = 8;                         // CS pin on SD card
+File tempLog;                             // file that data is written to 
+unsigned long t;                          // flight-time
 
-unsigned long t; // flight-time
-
+// Setup
 void setup() {
   Serial.begin(9600); // open serial port
   sensors.begin(); // start up Dallas temp sensor library 
@@ -67,7 +70,7 @@ void setup() {
   while (1); // dont do anything more
   }
   
-  Serial.println("card initialization PASSED... bon voyage!"); // initialization successful
+  Serial.println("card initialization PASSED... bon voyage!");          // initialization successful
 
   // Initialize file:
   tempLog = SD.open(filename, FILE_WRITE); // open file
@@ -86,14 +89,14 @@ void setup() {
 
 void loop() {
   
-  t = millis() / 1000; // set flight-time variable to Arduino internal clock
+  t = millis() / 1000;                      // set flight-time variable to Arduino internal clock
   
   ////////// Temperature monitoring ////////// 
   
-  t1 = getAnalogTemp(tPin1); // analog temp in Kelvin
-  sensors.requestTemperatures(); // request temp from digital temp sensor...
-  t2 = sensors.getTempCByIndex(0); // digital temp in celcius
-  t2 = t2 + 273.15; // digital temp in Kelvin
+  t1 = getAnalogTemp(tPin1);                // analog temp in Kelvin
+  sensors.requestTemperatures();            // request temp from digital temp sensor...
+  t2 = sensors.getTempCByIndex(0);          // digital temp in celcius
+  t2 = t2 + 273.15;                         // digital temp in Kelvin
 
   ////////// Heater operation //////////
 
@@ -103,7 +106,7 @@ void loop() {
    heaterStatus = "on";
   }
   
-// compare digital temp. to critical temp.:  
+// Compare digital temp. to critical temp.:  
   else{
     if (t2 < t_low) {
       hold = 1; // if temperature is below low critical temperature
@@ -126,26 +129,26 @@ void loop() {
 ////////// Datalogging //////////
 
 data = "";
-data += t1; // log value of analog temp.
-data += ","; // log value of digital temp. 
-data += t2;
+data += t1;               // log value of analog temp.
+data += ",";               
+data += t2;               // log value of digital temp.
 data += ",";
-data += heaterStatus; // log heater status (either "on" or "off")
+data += heaterStatus;     // log heater status (either "on" or "off")
 data += ",";
-data += flightTime(t); // log flight time; flightTime is a user-defined function
+data += flightTime(t);    // log flight time; flightTime is a user-defined function
 
 ////////// Data Writing //////////
 
- tempLog = SD.open("tempLog.csv", FILE_WRITE); // open file
+ tempLog = SD.open("tempLog.csv", FILE_WRITE);    // open file
 
  if (tempLog) {
-    //Serial.println("tempLog.csv opened..."); // file open successfully 
+    //Serial.println("tempLog.csv opened...");    // file open successfully 
     tempLog.println(data);
     tempLog.close();
     Serial.println(data);
   }
   else {
-    Serial.println("error opening file"); // file open failed
+    Serial.println("error opening file");         // file open failed
     return;
   }
 
@@ -157,9 +160,9 @@ data += flightTime(t); // log flight time; flightTime is a user-defined function
 
 // Reads in temp. from analog sensor and converts it to Kelvin; written by: Joey Habeck
 float getAnalogTemp(int pin) {
-  float t = analogRead(pin) * .004882814; // analog temperature
-  float t_F = (((t - .5) * 100) * 1.8) + 32; // convert temperature to Farenheit
-  float t_K = (t_F + 459.67) * 5 / 9; // convert Farenheit to Kelvin
+  float t = analogRead(pin) * .004882814;       // analog temperature
+  float t_F = (((t - .5) * 100) * 1.8) + 32;    // convert temperature to Farenheit
+  float t_K = (t_F + 459.67) * 5 / 9;           // convert Farenheit to Kelvin
   return (t_K);
 }
 
